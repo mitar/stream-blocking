@@ -23,7 +23,7 @@ function processFile(callback) {
 	console.log("after sleep");
 	throw new Error("test");
   };
-  return fs.createReadStream('../../../../../tar-blocking.js').on('data', Meteor.bindEnvironment(onData, onException)).on('end', function() {
+  return fs.createReadStream('../../../../../stream-blocking.js').on('data', Meteor.bindEnvironment(onData, onException)).on('end', function() {
 	console.log("end");
 	if (finished) {
 	  return;
@@ -43,14 +43,14 @@ function processFile(callback) {
 if (Meteor.isClient) {
   Template.hello.events({
     'click input': function () {
-      Meteor.call('test-tar');
+      Meteor.call('test-stream');
     }
   });
 }
 
 if (Meteor.isServer) {
   Meteor.methods({
-    'test-tar': function () {
+    'test-stream': function () {
       console.log("Calling processFile");
       Meteor._wrapAsync(processFile)();
       console.log("processFile returned");
