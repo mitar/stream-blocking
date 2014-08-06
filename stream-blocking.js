@@ -4,39 +4,39 @@ function processFile(callback) {
   count = 0;
   finished = false;
   onException = function (error) {
-	if (finished) {
-	  Meteor._debug("Exception thrown after already finished:", error.stack || error);
-	}
-	if (finished) {
-	  return;
-	}
-	finished = true;
-	return callback(error);
+    if (finished) {
+      Meteor._debug("Exception thrown after already finished:", error.stack || error);
+    }
+    if (finished) {
+      return;
+    }
+    finished = true;
+    return callback(error);
   };
   onData = function(data) {
-	console.log("onData");
-	if (finished) {
-	  return;
-	}
-	console.log("before sleep");
-	Meteor._sleepForMs(500);
-	console.log("after sleep");
-	throw new Error("test");
+    console.log("onData");
+    if (finished) {
+      return;
+    }
+    console.log("before sleep");
+    Meteor._sleepForMs(500);
+    console.log("after sleep");
+    throw new Error("test");
   };
   return fs.createReadStream('../../../../../stream-blocking.js').on('data', Meteor.bindEnvironment(onData, onException)).on('end', function() {
-	console.log("end");
-	if (finished) {
-	  return;
-	}
-	finished = true;
-	return callback(null, count);
+    console.log("end");
+    if (finished) {
+      return;
+    }
+    finished = true;
+    return callback(null, count);
   }).on('error', function(error) {
-	console.log("error", error);
-	if (finished) {
-	  return;
-	}
-	finished = true;
-	return callback(error);
+    console.log("error", error);
+    if (finished) {
+      return;
+    }
+    finished = true;
+    return callback(error);
   });
 };
 
@@ -54,6 +54,6 @@ if (Meteor.isServer) {
       console.log("Calling processFile");
       Meteor._wrapAsync(processFile)();
       console.log("processFile returned");
-	}
+    }
   });
 }
